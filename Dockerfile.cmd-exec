@@ -1,12 +1,12 @@
 # =============================================================
-# Pattern 2: CMD - Exec Form
+# パターン2: CMD - exec形式
 # =============================================================
-# Docker runs: python app.py  (directly, no shell wrapper)
+# Docker が実行するコマンド: python app.py（シェルを介さず直接実行）
 #
-# Process tree inside container:
-#   PID 1: python app.py    ← receives SIGTERM directly
+# コンテナ内のプロセスツリー:
+#   PID 1: python app.py    ← SIGTERM が直接届く
 #
-# Result: Python ADK WILL receive SIGTERM from k8s pod termination
+# 結果: k8s の pod termination による SIGTERM は Python ADK に届く
 # =============================================================
 
 FROM python:3.12-slim
@@ -14,5 +14,5 @@ FROM python:3.12-slim
 WORKDIR /app
 COPY app.py .
 
-# Exec form: CMD runs python directly as PID 1
+# exec形式: python が PID 1 として直接起動される
 CMD ["python", "app.py"]

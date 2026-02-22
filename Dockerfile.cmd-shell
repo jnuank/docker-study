@@ -1,13 +1,13 @@
 # =============================================================
-# Pattern 1: CMD - Shell Form
+# パターン1: CMD - シェル形式
 # =============================================================
-# Docker internally runs: /bin/sh -c "python app.py"
+# Docker が内部で実行するコマンド: /bin/sh -c "python app.py"
 #
-# Process tree inside container:
-#   PID 1: /bin/sh          ← receives SIGTERM (but sh ignores it by default)
-#   PID 7: python app.py    ← SIGTERM does NOT reach here
+# コンテナ内のプロセスツリー:
+#   PID 1: /bin/sh          ← SIGTERM はここに届く（ただし sh はデフォルトで無視）
+#   PID 7: python app.py    ← SIGTERM は届かない
 #
-# Result: Python ADK will NOT receive SIGTERM from k8s pod termination
+# 結果: k8s の pod termination による SIGTERM は Python ADK に届かない
 # =============================================================
 
 FROM python:3.12-slim
@@ -15,5 +15,5 @@ FROM python:3.12-slim
 WORKDIR /app
 COPY app.py .
 
-# Shell form: CMD runs via /bin/sh -c
+# シェル形式: CMD は /bin/sh -c 経由で実行される
 CMD python app.py
