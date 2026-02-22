@@ -1,16 +1,16 @@
 # =============================================================
-# Pattern 3: ENTRYPOINT - Exec Form
+# パターン3: ENTRYPOINT - exec形式
 # =============================================================
-# Docker runs: python app.py  (directly, no shell wrapper)
+# Docker が実行するコマンド: python app.py（シェルを介さず直接実行）
 #
-# Process tree inside container:
-#   PID 1: python app.py    ← receives SIGTERM directly
+# コンテナ内のプロセスツリー:
+#   PID 1: python app.py    ← SIGTERM が直接届く
 #
-# Result: Python ADK WILL receive SIGTERM from k8s pod termination
+# 結果: k8s の pod termination による SIGTERM は Python ADK に届く
 #
-# Note: ENTRYPOINT vs CMD exec form both work, but ENTRYPOINT is
-# harder to override at runtime (requires --entrypoint flag),
-# making it the conventional choice for the "main" process.
+# 補足: ENTRYPOINT と CMD exec形式はどちらも動作するが、ENTRYPOINT は
+# 実行時に上書きしにくい（--entrypoint フラグが必要）ため、
+# メインプロセスの指定には ENTRYPOINT が慣習的に使われる。
 # =============================================================
 
 FROM python:3.12-slim
@@ -18,5 +18,5 @@ FROM python:3.12-slim
 WORKDIR /app
 COPY app.py .
 
-# ENTRYPOINT exec form: python runs directly as PID 1
+# ENTRYPOINT exec形式: python が PID 1 として直接起動される
 ENTRYPOINT ["python", "app.py"]
