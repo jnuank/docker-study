@@ -1,0 +1,30 @@
+# パターン2: CMD exec 形式
+# CMD ["python", "app.py"] → python が PID 1 になる
+# → SIGTERM は直接 Python に届く
+# → app.py の sigterm_handler が実行され、グレースフルシャットダウンできる
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmd-exec
+  labels:
+    app: cmd-exec
+    pattern: exec-form-cmd
+  annotations:
+    description: "CMD exec 形式: python が PID 1 → SIGTERM が Python に届く（Good Pattern）"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cmd-exec
+  template:
+    metadata:
+      labels:
+        app: cmd-exec
+        pattern: exec-form-cmd
+    spec:
+      # app.py の sigterm_handler は 5.5 秒かけてクリーンアップする
+      # 30s あれば十分グレースフルシャットダウンできる
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: cmd-exec
+          image: docker-study-cmd-exec

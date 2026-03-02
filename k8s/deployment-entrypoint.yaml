@@ -1,0 +1,30 @@
+# パターン3: ENTRYPOINT exec 形式
+# ENTRYPOINT ["python", "app.py"] → python が PID 1 になる
+# → SIGTERM は直接 Python に届く
+# → app.py の sigterm_handler が実行され、グレースフルシャットダウンできる
+# パターン2と挙動は同じだが、ENTRYPOINT は上書きが難しいため
+# メインプロセスの定義に使うのが慣例
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: entrypoint
+  labels:
+    app: entrypoint
+    pattern: exec-form-entrypoint
+  annotations:
+    description: "ENTRYPOINT exec 形式: python が PID 1 → SIGTERM が Python に届く（Good Pattern）"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: entrypoint
+  template:
+    metadata:
+      labels:
+        app: entrypoint
+        pattern: exec-form-entrypoint
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: entrypoint
+          image: docker-study-entrypoint

@@ -1,0 +1,30 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: docker-study
+
+build:
+  # ローカルビルド: クラスタへの push なし（minikube / kind / Docker Desktop 向け）
+  local:
+    push: false
+  artifacts:
+    # パターン1: CMD シェル形式（/bin/sh が PID 1 → SIGTERM が Python に届かない）
+    - image: docker-study-cmd-shell
+      docker:
+        dockerfile: Dockerfile.cmd-shell
+
+    # パターン2: CMD exec 形式（python が PID 1 → SIGTERM が Python に届く）
+    - image: docker-study-cmd-exec
+      docker:
+        dockerfile: Dockerfile.cmd-exec
+
+    # パターン3: ENTRYPOINT exec 形式（python が PID 1 → SIGTERM が Python に届く）
+    - image: docker-study-entrypoint
+      docker:
+        dockerfile: Dockerfile.entrypoint
+
+manifests:
+  rawYaml:
+    - k8s/deployment-cmd-shell.yaml
+    - k8s/deployment-cmd-exec.yaml
+    - k8s/deployment-entrypoint.yaml

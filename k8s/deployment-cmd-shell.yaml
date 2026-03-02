@@ -1,0 +1,32 @@
+# パターン1: CMD シェル形式
+# CMD python app.py → /bin/sh が PID 1 になる
+# → SIGTERM は /bin/sh に届くが Python には転送されない
+# → terminationGracePeriodSeconds 経過後に SIGKILL で強制終了される
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmd-shell
+  labels:
+    app: cmd-shell
+    pattern: shell-form
+  annotations:
+    description: "CMD シェル形式: /bin/sh が PID 1 → SIGTERM が Python に届かない（Bad Pattern）"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cmd-shell
+  template:
+    metadata:
+      labels:
+        app: cmd-shell
+        pattern: shell-form
+    spec:
+      # k8s が SIGTERM を送ってから SIGKILL するまでの猶予時間（デフォルト 30s）
+      # cmd-shell パターンでは Python がシグナルを受け取れないため
+      # この時間が過ぎると強制終了（SIGKILL）される
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: cmd-shell
+          image: docker-study-cmd-shell
+          # imagePullPolicy: Never は skaffold.yaml の local ビルドで自動設定される
