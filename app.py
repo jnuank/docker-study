@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Docker CMD vs ENTRYPOINT のシグナルハンドリング検証。
-Python ADK（Agent Development Kit）の長時間稼働プロセスをシミュレートする。
+Python 稼働プロセスをシミュレートする。
 """
 
 import os
@@ -23,8 +23,8 @@ def print_process_info():
 
 def sigterm_handler(signum, frame):
     print(f"\n[SIGNAL] *** SIGTERM を受信！ (PID={os.getpid()}) ***", flush=True)
-    print("[SIGNAL] グレースフルシャットダウン開始（ADKクリーンアップをシミュレート）", flush=True)
-    # ADKのクリーンアップをシミュレート（例: 実行中のLLM呼び出しの完了、状態のフラッシュ）
+    print("[SIGNAL] グレースフルシャットダウン開始（クリーンアップをシミュレート）", flush=True)
+    # クリーンアップをシミュレート（例: 実行中のLLM呼び出しの完了、状態のフラッシュ）
     time.sleep(5.5)
     print("[SIGNAL] クリーンアップ完了。終了します。", flush=True)
     sys.exit(0)
@@ -36,17 +36,17 @@ def sigint_handler(signum, frame):
 
 
 def simulate_adk_work():
-    """ADKエージェントの作業をシミュレート（LLM呼び出し、ツール使用など）"""
+    """エージェントの作業をシミュレート（LLM呼び出し、ツール使用など）"""
     step = 0
     while True:
         step += 1
-        print(f"[ADK]  step={step} エージェント処理中... (PID={os.getpid()})", flush=True)
+        print(f"[INFO] step={step} 処理中... (PID={os.getpid()})", flush=True)
         time.sleep(3)
 
 
 def main():
     print("=" * 60, flush=True)
-    print("[START] Python ADK シグナルハンドリングテスト", flush=True)
+    print("[START] Python シグナルハンドリングテスト", flush=True)
     print_process_info()
 
     # シグナルハンドラを登録
@@ -55,7 +55,7 @@ def main():
     print("[INFO] シグナルハンドラ登録済み（SIGTERM, SIGINT）", flush=True)
     print("=" * 60, flush=True)
 
-    # ADKシミュレーションをメインスレッドで実行
+    # シミュレーションをメインスレッドで実行
     try:
         simulate_adk_work()
     except SystemExit:

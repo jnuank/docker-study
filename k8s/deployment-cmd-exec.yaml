@@ -27,4 +27,5 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: cmd-exec
-          image: docker-study-cmd-exec
+          imagePullPolicy: IfNotPresent
+          image: cmd-exec
