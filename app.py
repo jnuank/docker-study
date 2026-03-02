@@ -25,7 +25,7 @@ def sigterm_handler(signum, frame):
     print(f"\n[SIGNAL] *** SIGTERM を受信！ (PID={os.getpid()}) ***", flush=True)
     print("[SIGNAL] グレースフルシャットダウン開始（ADKクリーンアップをシミュレート）", flush=True)
     # ADKのクリーンアップをシミュレート（例: 実行中のLLM呼び出しの完了、状態のフラッシュ）
-    time.sleep(0.5)
+    time.sleep(5.5)
     print("[SIGNAL] クリーンアップ完了。終了します。", flush=True)
     sys.exit(0)
 
